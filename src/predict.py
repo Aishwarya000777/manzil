@@ -1,76 +1,326 @@
-"""Run Manzil intent classification and CRF NER prediction on one query."""
-import argparse, gzip, hashlib, io, json
-import joblib, numpy as np, torch
+
+import gzip
+import hashlib
+import io
+from pathlib import Path
+
+import joblib
+import numpy as np
+import torch
 from torch import nn
 
-FEATURE_DIM=4096
 
-def token_features(tokens,i):
-    w=tokens[i]; lo=w.lower()
-    shape="".join("A" if c.isupper() else "a" if c.islower() else "0" if c.isdigit() else c for c in w)
-    f=[f"w={lo}",f"shape={shape}",f"len={min(len(w),15)}",f"p1={lo[:1]}",f"p2={lo[:2]}",f"p3={lo[:3]}",f"s1={lo[-1:]}",f"s2={lo[-2:]}",f"s3={lo[-3:]}"]
-    f += ["BOS"] if i==0 else [f"prev={tokens[i-1].lower()}",f"prev2={tokens[i-1].lower()[:3]}"]
-    f += ["EOS"] if i==len(tokens)-1 else [f"next={tokens[i+1].lower()}",f"next2={tokens[i+1].lower()[:3]}"]
-    if i: f.append(f"bp={tokens[i-1].lower()}_{lo}")
-    if i<len(tokens)-1: f.append(f"bn={lo}_{tokens[i+1].lower()}")
-    return f
+FEATURE_DIM = 4096
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+CRF_MODEL_PATH = PROJECT_ROOT / "models" / "manzil_linear_crf.pt"
+INTENT_MODEL_PATH = PROJECT_ROOT / "models" / "intent_char_tfidf_logreg.joblib"
+
+
+# --------------------------------------------------
+# 1. CRF FEATURE EXTRACTION
+# --------------------------------------------------
+
+def token_features(tokens, i):
+    word = tokens[i]
+    lower = word.lower()
+
+    shape = "".join(
+        "A" if c.isupper()
+        else "a" if c.islower()
+        else "0" if c.isdigit()
+        else c
+        for c in word
+    )
+
+    features = [
+        f"w={lower}",
+        f"shape={shape}",
+        f"len={min(len(word), 15)}",
+        f"p1={lower[:1]}",
+        f"p2={lower[:2]}",
+        f"p3={lower[:3]}",
+        f"s1={lower[-1:]}",
+        f"s2={lower[-2:]}",
+        f"s3={lower[-3:]}"
+    ]
+
+    if i == 0:
+        features.append("BOS")
+    else:
+        features.extend([
+            f"prev={tokens[i-1].lower()}",
+            f"prev2={tokens[i-1].lower()[:3]}"
+        ])
+
+    if i == len(tokens) - 1:
+        features.append("EOS")
+    else:
+        features.extend([
+            f"next={tokens[i+1].lower()}",
+            f"next2={tokens[i+1].lower()[:3]}"
+        ])
+
+    if i:
+        features.append(
+            f"bp={tokens[i-1].lower()}_{lower}"
+        )
+
+    if i < len(tokens) - 1:
+        features.append(
+            f"bn={lower}_{tokens[i+1].lower()}"
+        )
+
+    return features
+
 
 def encode(tokens):
-    x=np.zeros((len(tokens),FEATURE_DIM),dtype=np.float32)
+    features_matrix = np.zeros(
+        (len(tokens), FEATURE_DIM),
+        dtype=np.float32
+    )
+
     for i in range(len(tokens)):
-        for f in token_features(tokens,i):
-            j=int(hashlib.md5(f.encode()).hexdigest()[:8],16)%FEATURE_DIM; x[i,j]+=1
-    return torch.from_numpy(x)
+        for feature in token_features(tokens, i):
+            index = (
+                int(hashlib.md5(feature.encode()).hexdigest()[:8], 16)
+                % FEATURE_DIM
+            )
+
+            features_matrix[i, index] += 1
+
+    return torch.from_numpy(features_matrix)
+
+
+# --------------------------------------------------
+# 2. LINEAR CHAIN CRF
+# --------------------------------------------------
 
 class LinearChainCRF(nn.Module):
-    def __init__(self,n):
+
+    def __init__(self, num_tags):
         super().__init__()
-        self.em=nn.Parameter(torch.zeros(FEATURE_DIM,n)); self.trans=nn.Parameter(torch.zeros(n,n))
-        self.start=nn.Parameter(torch.zeros(n)); self.end=nn.Parameter(torch.zeros(n))
-    def decode(self,x):
-        e=x@self.em; score=self.start+e[0]; b=[]
-        for t in range(1,len(e)):
-            v,ix=(score[:,None]+self.trans).max(0); score=v+e[t]; b.append(ix)
-        last=int((score+self.end).argmax()); path=[last]
-        for bp in reversed(b): last=int(bp[last]); path.append(last)
+
+        self.em = nn.Parameter(
+            torch.zeros(FEATURE_DIM, num_tags)
+        )
+
+        self.trans = nn.Parameter(
+            torch.zeros(num_tags, num_tags)
+        )
+
+        self.start = nn.Parameter(
+            torch.zeros(num_tags)
+        )
+
+        self.end = nn.Parameter(
+            torch.zeros(num_tags)
+        )
+
+    def decode(self, x):
+        emissions = x @ self.em
+
+        score = self.start + emissions[0]
+        backpointers = []
+
+        for t in range(1, len(emissions)):
+            values, indices = (
+                score[:, None] + self.trans
+            ).max(0)
+
+            score = values + emissions[t]
+            backpointers.append(indices)
+
+        last = int((score + self.end).argmax())
+
+        path = [last]
+
+        for pointer in reversed(backpointers):
+            last = int(pointer[last])
+            path.append(last)
+
         return list(reversed(path))
 
-def load_gz(path, loader):
-    raw=open(path,"rb").read()
-    if path.endswith(".gz"): raw=gzip.decompress(raw)
+
+# --------------------------------------------------
+# 3. MODEL FILE LOADING
+# --------------------------------------------------
+
+def load_model_file(path, loader):
+    with open(path, "rb") as file:
+        raw = file.read()
+
+    if str(path).endswith(".gz"):
+        raw = gzip.decompress(raw)
+
     return loader(io.BytesIO(raw))
 
-def spans(query,tokens,tags):
-    offsets=[]; cur=0
-    for t in tokens:
-        s=query.find(t,cur)
-        if s<0: s=cur
-        offsets.append((s,s+len(t))); cur=s+len(t)
-    out=[]; start=None; label=None
-    for i in range(len(tags)+1):
-        tag=tags[i] if i<len(tags) else "O"
-        pref,lab=(tag[:2],tag[2:]) if "-" in tag else ("O",None)
-        if start is not None and (pref=="B-" or pref=="O" or lab!=label):
-            s,e=offsets[start][0],offsets[i-1][1]
-            out.append({"text":query[s:e],"label":label,"start":s,"end":e})
-            start=label=None
-        if pref=="B-": start,label=i,lab
-        elif pref=="I-" and start is None: start,label=i,lab
-    return out
 
-def main():
-    p=argparse.ArgumentParser()
-    p.add_argument("query")
-    p.add_argument("--crf-model",default="models/manzil_linear_crf.pt.gz")
-    p.add_argument("--intent-model",default="models/intent_char_tfidf_logreg.joblib.gz")
-    a=p.parse_args()
-    tokens=a.query.split()
-    if not tokens: raise SystemExit("Query is empty.")
-    ck=load_gz(a.crf_model,lambda b:torch.load(b,map_location="cpu",weights_only=False))
-    tags=ck["tags"]; model=LinearChainCRF(len(tags)); model.load_state_dict(ck["state_dict"]); model.eval()
-    with torch.no_grad(): pred=[tags[i] for i in model.decode(encode(tokens))]
-    obj=load_gz(a.intent_model,joblib.load)
-    intent=obj["classifier"].predict(obj["vectorizer"].transform([a.query]))[0]
-    print(json.dumps({"query":a.query,"intent":str(intent),"tokens":tokens,"bio_tags":pred,"entities":spans(a.query,tokens,pred)},ensure_ascii=False,indent=2))
+# --------------------------------------------------
+# 4. ENTITY SPAN EXTRACTION
+# --------------------------------------------------
 
-if __name__=="__main__": main()
+def extract_spans(query, tokens, tags):
+
+    offsets = []
+    current = 0
+
+    for token in tokens:
+        start = query.find(token, current)
+
+        if start < 0:
+            start = current
+
+        offsets.append((start, start + len(token)))
+        current = start + len(token)
+
+    entities = []
+    start = None
+    label = None
+
+    for i in range(len(tags) + 1):
+
+        tag = tags[i] if i < len(tags) else "O"
+
+        prefix, entity_label = (
+            (tag[:2], tag[2:])
+            if "-" in tag
+            else ("O", None)
+        )
+
+        if start is not None and (
+            prefix == "B-" or prefix == "O" or entity_label != label
+        ):
+            entity_start = offsets[start][0]
+            entity_end = offsets[i - 1][1]
+
+            entities.append({
+                "text": query[entity_start:entity_end],
+                "label": label,
+                "start": entity_start,
+                "end": entity_end
+            })
+
+            start = None
+            label = None
+
+        if prefix == "B-":
+            start = i
+            label = entity_label
+
+        elif prefix == "I-" and start is None:
+            start = i
+            label = entity_label
+
+    return entities
+
+
+# --------------------------------------------------
+# 5. MANZIL MODEL SERVICE
+# --------------------------------------------------
+
+class ManzilModelService:
+
+    def __init__(self):
+        self.crf_model = None
+        self.intent_model = None
+        self.tags = None
+        self.ready = False
+
+    def load_models(self):
+
+        if not CRF_MODEL_PATH.exists():
+            raise FileNotFoundError(
+                f"CRF checkpoint not found: {CRF_MODEL_PATH}"
+            )
+
+        if not INTENT_MODEL_PATH.exists():
+            raise FileNotFoundError(
+                f"Intent checkpoint not found: {INTENT_MODEL_PATH}"
+            )
+
+        # Load CRF checkpoint
+        checkpoint = load_model_file(
+            CRF_MODEL_PATH,
+            lambda b: torch.load(
+                b,
+                map_location="cpu",
+                weights_only=False
+            )
+        )
+
+        self.tags = checkpoint["tags"]
+
+        self.crf_model = LinearChainCRF(
+            len(self.tags)
+        )
+
+        self.crf_model.load_state_dict(
+            checkpoint["state_dict"]
+        )
+
+        self.crf_model.eval()
+
+        # Load intent classifier
+        self.intent_model = load_model_file(
+            INTENT_MODEL_PATH,
+            joblib.load
+        )
+
+        self.ready = True
+
+        print("Manzil intent classifier loaded.")
+        print("Manzil CRF NER model loaded.")
+
+    def predict(self, query):
+
+        if not self.ready:
+            raise RuntimeError(
+                "Manzil ML models have not been loaded."
+            )
+
+        if not query or not query.strip():
+            raise ValueError("Query cannot be empty.")
+
+        tokens = query.split()
+
+        # Intent prediction
+        vectorizer = self.intent_model["vectorizer"]
+        classifier = self.intent_model["classifier"]
+
+        intent_vector = vectorizer.transform([query])
+
+        intent = classifier.predict(intent_vector)[0]
+
+        # CRF NER prediction
+        encoded_tokens = encode(tokens)
+
+        with torch.no_grad():
+            predicted_ids = self.crf_model.decode(
+                encoded_tokens
+            )
+
+        bio_tags = [
+            self.tags[index]
+            for index in predicted_ids
+        ]
+
+        entities = extract_spans(
+            query,
+            tokens,
+            bio_tags
+        )
+
+        return {
+            "query": query,
+            "intent": str(intent),
+            "tokens": tokens,
+            "bio_tags": bio_tags,
+            "entities": entities
+        }
+
+
+# Shared service instance
+model_service = ManzilModelService()
+

@@ -1,0 +1,145 @@
+{
+    "evaluation": {
+        "ML-only": {
+            "approach": "ML-only",
+            "query_count": 1,
+            "intent": {
+                "accuracy": 1.0,
+                "macro_precision": 1.0,
+                "macro_recall": 1.0,
+                "macro_f1": 1.0,
+                "sample_count": 1
+            },
+            "destination": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "reference_location": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "spatial_relationships": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "true_positive": 0,
+                "false_positive": 0,
+                "false_negative": 2
+            },
+            "ambiguity": null,
+            "clarification": null,
+            "entity_extraction": {
+                "precision": 0.5,
+                "recall": 0.1667,
+                "f1": 0.25,
+                "true_positive": 1,
+                "false_positive": 1,
+                "false_negative": 5,
+                "note": "Exact entity text and label match; not token-level BIO span evaluation."
+            }
+        },
+        "LLM-only": {
+            "approach": "LLM-only",
+            "query_count": 1,
+            "intent": {
+                "accuracy": 1.0,
+                "macro_precision": 1.0,
+                "macro_recall": 1.0,
+                "macro_f1": 1.0,
+                "sample_count": 1
+            },
+            "destination": {
+                "exact_match_accuracy": 1.0,
+                "correct": 1,
+                "total": 1
+            },
+            "reference_location": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "spatial_relationships": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "true_positive": 0,
+                "false_positive": 0,
+                "false_negative": 2
+            },
+            "ambiguity": {
+                "accuracy": 0.0,
+                "macro_precision": 0.0,
+                "macro_recall": 0.0,
+                "macro_f1": 0.0,
+                "sample_count": 1
+            },
+            "clarification": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "entity_extraction": null
+        },
+        "Hybrid": {
+            "approach": "Hybrid",
+            "query_count": 1,
+            "intent": {
+                "accuracy": 1.0,
+                "macro_precision": 1.0,
+                "macro_recall": 1.0,
+                "macro_f1": 1.0,
+                "sample_count": 1
+            },
+            "destination": {
+                "exact_match_accuracy": 1.0,
+                "correct": 1,
+                "total": 1
+            },
+            "reference_location": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "spatial_relationships": {
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "true_positive": 0,
+                "false_positive": 2,
+                "false_negative": 2
+            },
+            "ambiguity": {
+                "accuracy": 0.0,
+                "macro_precision": 0.0,
+                "macro_recall": 0.0,
+                "macro_f1": 0.0,
+                "sample_count": 1
+            },
+            "clarification": {
+                "exact_match_accuracy": 0.0,
+                "correct": 0,
+                "total": 1
+            },
+            "entity_extraction": null
+        }
+    },
+    "latency": {
+        "ML-only": {
+            "average_seconds": 0.0717,
+            "total_seconds": 0.0717,
+            "query_count": 1
+        },
+        "LLM-only": {
+            "average_seconds": 5.0686,
+            "total_seconds": 5.0686,
+            "query_count": 1
+        },
+        "Hybrid": {
+            "average_seconds": 19.275,
+            "total_seconds": 19.275,
+            "query_count": 1
+        }
+    }
+}
