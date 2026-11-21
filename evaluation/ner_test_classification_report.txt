@@ -1,0 +1,23 @@
+              precision    recall  f1-score   support
+
+   B-CONTEXT       0.00      0.00      0.00        22
+      B-DESC       0.31      0.27      0.29        15
+      B-DEST       0.79      0.90      0.84       125
+       B-DIR       0.00      0.00      0.00         0
+      B-DIST       0.00      0.00      0.00         0
+       B-REF       0.88      0.75      0.81       102
+       B-REL       0.81      0.57      0.67        37
+   I-CONTEXT       0.00      0.00      0.00        68
+      I-DESC       0.21      0.23      0.22        13
+      I-DEST       0.78      0.92      0.84       106
+       I-DIR       0.00      0.00      0.00         0
+      I-DIST       0.00      0.00      0.00         0
+       I-REF       0.90      0.89      0.90        63
+       I-REL       0.66      0.95      0.78       104
+           O       0.93      0.95      0.94      1688
+
+    accuracy                           0.89      2343
+   macro avg       0.42      0.43      0.42      2343
+weighted avg       0.86      0.89      0.87      2343
+
+Caveat: synthetic pilot labels have not been human validated.

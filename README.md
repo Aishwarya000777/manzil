@@ -1,31 +1,51 @@
-# Manzil — Hindi/Hinglish Navigation Query Understanding
+# Manzil: Hindi / Romanized Hindi / Hinglish Navigation Query Understanding
 
-Manzil is an NLP prototype for understanding navigation-related queries in Hindi, Romanized Hindi, and Hinglish. It explores intent classification, BIO-based entity extraction, and sentence-level semantic representations of destinations and spatial relations.
+Manzil is an NLP research prototype for understanding navigation-related utterances in Hindi, Romanized Hindi and Hinglish. It includes intent classification, BIO-style entity extraction, sentence-level semantic annotations and an experimental multilingual-transformer benchmark workflow.
 
-## Project status and research integrity
+> **Research integrity:** The 1,000-row Manzil v2 pilot is a synthetic candidate dataset. Its annotations have not been certified by human annotators. The reported baseline metrics are preliminary results on the pilot's held-out synthetic split, not real-world performance. The annotation workbook is a review tool, not proof of completed human annotation.
 
-This repository contains a **synthetic-data research pilot and baseline implementation**. The 1,000-row Manzil v2 pilot contains generated candidate utterances. The original 3,024-row dataset is preserved separately under `source_original/`. Combined index files are provided for convenience.
+## Model status
 
-The included intent classifier and CRF baseline were trained and evaluated on the pilot's predefined train/validation/test split. Reported scores are preliminary results on synthetic candidate data and should not be interpreted as real-world performance.
+| Component | Status |
+|---|---|
+| Character n-gram TF-IDF + Logistic Regression intent baseline | Trained and evaluated |
+| Feature-hashed first-order linear-chain CRF NER baseline | Trained and evaluated |
+| XLM-R fine-tuning | Colab benchmark workflow prepared; not yet trained |
+| mBERT fine-tuning | Colab benchmark workflow prepared; not yet trained |
+| Double human annotation / adjudication | Pending; not completed |
 
-Human validation has **not** been completed. The annotation workbook is a review tool, not evidence of completed annotation. XLM-R and mBERT are **not yet trained**; a Google Colab notebook is included to run those experiments.
+### Reported baseline results
 
-## Repository contents
+**Intent classifier** (162 held-out synthetic pilot records):
+- Accuracy: **90.74%**
+- Macro precision: **92.25%**
+- Macro recall: **92.75%**
+- Macro F1: **91.46%**
+- Weighted F1: **91.18%**
 
-- `manzil_v2_full.jsonl/.csv`: full pilot records.
-- `manzil_v2_token_level.jsonl`: token-level BIO NER data.
-- `manzil_v2_semantic_level.jsonl`: sentence-level semantic representations.
-- `MANZIL_COMBINED_INDEX_4024.csv`: combined index of legacy and pilot rows.
-- `source_original/`: preserved original dataset and legacy audit files.
-- `models/`: trained intent and CRF baseline models.
-- `evaluation/`: validation/test reports and confusion matrices.
-- `train_crf.py`, `predict.py`: baseline training and inference.
-- `Manzil_Human_Annotation_Workbook_300.xlsx`: independent double-annotation workbook (pending human review).
-- `annotation_agreement.py`: agreement calculation after annotator review.
-- `Manzil_XLMR_mBERT_Colab_Benchmark.ipynb`: Colab benchmark notebook.
-- `HUMAN_REVIEW_AND_TRANSFORMER_GUIDE.md`: detailed next steps.
+**CRF entity extraction** (held-out synthetic pilot split):
+- Exact-span precision: **73.15%**
+- Exact-span recall: **71.17%**
+- Exact-span F1: **72.15%**
+- Token accuracy: **88.73%**
 
-## Quick start
+These figures are reproduced in `evaluation/`. They must be labelled synthetic-pilot results.
+
+## Repository layout
+
+- `src/`: CRF training, inference and inter-annotator agreement scripts.
+- `notebooks/`: Colab workflow for XLM-R and mBERT intent/NER comparison.
+- `docs/`: annotation guidelines, research workflow and method references.
+- `evaluation/`: classification reports, exact-span metrics and confusion matrices.
+- `annotation/`: instructions for independent annotators and adjudication.
+- `data/dataset_statistics.json`: pilot distribution, split and limitation summary.
+- `examples/`: manual smoke-test queries (not an evaluation set).
+
+The full 1,000-row pilot, original 3,024-row source dataset, 300-query Excel annotation workbook and trained checkpoint binaries are in the companion project ZIP shared with this repository. They are not duplicated in this lightweight source repository.
+
+## Setup
+
+Python 3.10+ is recommended.
 
 ```bash
 python -m venv .venv
@@ -33,26 +53,44 @@ python -m venv .venv
 source .venv/bin/activate
 # Windows PowerShell
 .venv\Scripts\Activate.ps1
+
 pip install -r requirements.txt
 ```
 
-Run the included inference script according to its CLI help / README instructions. The model artifact is a project-specific baseline; use the supplied training script and evaluation files to inspect the implementation and outputs.
+Extract the companion project ZIP into the repository root to create the `data/` and `models/` files required by the scripts.
+
+## Run inference
+
+```bash
+python src/predict.py "रेलवे स्टेशन के सामने वाला अस्पताल कहाँ है?"
+```
+
+The predictor returns an intent, token sequence, BIO tags and extracted entity spans. Predictions are baseline outputs and should be manually inspected.
+
+## Retrain the CRF
+
+```bash
+python src/train_crf.py --data data/manzil_v2_token_level.jsonl --epochs 15 --out models/manzil_linear_crf.pt
+```
+
+Training and inference use the same feature templates and checkpoint parameter names.
 
 ## Human annotation
 
-Use the two independent annotator sheets in the workbook. Keep annotators blind to the other person's labels, resolve disagreements in the adjudication sheet, and report agreement statistics. Do not mark examples as human-validated until this process has actually taken place.
+The companion ZIP contains `Manzil_Human_Annotation_Workbook_300.xlsx`, with independent sheets for two annotators and a separate adjudication sheet. The workbook is not completed. Two people must independently review the selected examples, disagreements must be adjudicated, and agreement must be calculated before the examples can be described as human-validated. See `docs/ANNOTATION_GUIDELINES.md`.
 
-## Transformer comparison
+## XLM-R / mBERT comparison
 
-Open the Colab notebook, select a GPU runtime, upload the project ZIP/datasets, and run the cells. Record actual outputs; do not report scores before training and evaluation have completed.
+Open `notebooks/Manzil_XLMR_mBERT_Colab_Benchmark.ipynb` in Google Colab, select a GPU runtime, upload the companion project ZIP and run the cells. It fine-tunes intent and NER heads for XLM-R and mBERT and reports intent and entity metrics. These transformer experiments have not yet been run; do not report scores until actual execution.
 
-## Citations
+## Dataset caveats
 
-The project should cite the methods it uses, including:
-- Lafferty, McCallum & Pereira (2001), *Conditional Random Fields: Probabilistic Models for Segmenting and Labeling Sequence Data*.
-- Devlin et al. (2019), *BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding*.
-- Conneau et al. (2020), *Unsupervised Cross-lingual Representation Learning at Scale* (XLM-R).
+The pilot is generated from scenario/syntactic frames and must not be described as collected real-user traffic. A family-aware split reduces direct scenario-family overlap, but does not establish generalization to natural user queries. All generated candidate annotations require human review.
+
+## References
+
+See `docs/REFERENCES.md`. These publications support the methods, not the origin of the generated Manzil utterances.
 
 ## License
 
-No license is specified yet. Do not assume the project is open for reuse until a license is added.
+No open-source license is currently specified.

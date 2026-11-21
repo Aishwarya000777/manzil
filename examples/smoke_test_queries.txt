@@ -1,0 +1,5 @@
+# Manual smoke-test queries; not a scored test set
+रेलवे स्टेशन के सामने वाला अस्पताल कहाँ है?
+mujhe bus stand ke paas ATM tak ka rasta batao
+Mall ke peeche jo restaurant hai uska route batao
+कॉलेज से मेट्रो स्टेशन तक पहुँचने में कितना समय लगेगा?

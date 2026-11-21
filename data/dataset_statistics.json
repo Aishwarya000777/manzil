@@ -1,0 +1,21 @@
+{
+  "total_records":  1000,
+  "language": {"HINDI_DEVANAGARI":334,"ROMANIZED_HINDI":333,"HINGLISH":333},
+  "intent": {"ETA_QUERY":200,"SEARCH":200,"OTHER":200,"NAVIGATE":400},
+  "age_group": {"CHILD_5_10":200,"YOUNG_ADULT_19_35":200,"OLDER_ADULT_56_PLUS":200,"TEEN_11_18":200,"ADULT_36_55":200},
+  "speaking_style": {"CONVERSATIONAL":201,"FRAGMENTED":200,"DIRECT":199,"POLITE":200,"INFORMAL":200},
+  "complexity": {"SIMPLE":102,"REFERENCE_BASED":102,"SPATIAL":102,"DISTANCE_DIRECTION":100,"NESTED_RELATION":99,"IMPLICIT":99,"CONTEXTUAL":99,"INCOMPLETE":99,"SELF_CORRECTED":99,"CONTRADICTORY":99},
+  "scenario_family_count": 36,
+  "split": {"train":672,"validation":166,"test":162},
+  "split_family_overlap": {"train_validation":0,"train_test":0,"validation_test":0},
+  "normalized_exact_duplicate_groups": 0,
+  "entity_offset_errors": 0,
+  "annotation_status": "All 1,000 pilot rows are synthetic candidates pending human review. No manual validation or inter-annotator agreement is claimed.",
+  "model_training_status": {"intent_classifier":"trained","linear_chain_crf":"trained","xlm_roberta":"not_yet_trained","mbert":"not_yet_trained"},
+  "crf_test_metrics": {"exact_span_precision":0.7315,"exact_span_recall":0.7117,"exact_span_f1":0.7215,"token_accuracy":0.8873},
+  "known_limitations": [
+    "Some difficult complexity labels require human semantic verification.",
+    "This pilot uses frame-based synthetic generation and is not a substitute for real user utterances.",
+    "Spatial graph edges and ambiguity labels require human adjudication."
+  ]
+}
