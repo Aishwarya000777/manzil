@@ -1,4 +1,3 @@
-
 import gzip
 import hashlib
 import io
@@ -290,19 +289,47 @@ class ManzilModelService:
 
         tokens = query.split()
 
+
+
         # Intent classification
         vectorizer = self.intent_model["vectorizer"]
         classifier = self.intent_model["classifier"]
 
         intent_vector = vectorizer.transform([query])
+
         intent = classifier.predict(intent_vector)[0]
 
+        intent_probabilities = None
         intent_confidence = None
+        intent_margin = None
 
         if hasattr(classifier, "predict_proba"):
-            probabilities = classifier.predict_proba(intent_vector)[0]
-            intent_confidence = float(np.max(probabilities))
+            probabilities = classifier.predict_proba(
+                intent_vector
+            )[0]
 
+            intent_probabilities = {
+                str(label): float(probability)
+                for label, probability in zip(
+                    classifier.classes_,
+                    probabilities
+                )
+            }
+
+            sorted_probabilities = sorted(
+                probabilities,
+                reverse=True
+            )
+
+            intent_confidence = float(sorted_probabilities[0])
+
+            intent_margin = float(
+                sorted_probabilities[0] -
+                sorted_probabilities[1]
+            )
+
+
+        
         # CRF entity extraction
         encoded_tokens = encode(tokens)
 
@@ -324,9 +351,12 @@ class ManzilModelService:
             "query": query,
             "intent": str(intent),
             "intent_confidence": intent_confidence,
+            "intent_probabilities": intent_probabilities,
+            "intent_margin": intent_margin,
             "tokens": tokens,
             "bio_tags": bio_tags,
             "entities": entities
+
         }
 
 

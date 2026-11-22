@@ -7,7 +7,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from backend.model_service import model_service
 from backend.schemas import NavigationRequest, NavigationResponse
-from backend.llm_service import analyze_navigation_query
+from backend.conditional_router import process_navigation_query
 from backend.response_normalizer import normalize_response
 from backend.destination_engine import extract_destination_context
 from backend.semantic_engine import normalize_relationships
@@ -67,29 +67,31 @@ def health_check():
 @app.post("/api/analyze", response_model=NavigationResponse)
 def analyze_query(request: NavigationRequest):
     try:
-        # Step 1: Get ML predictions
+        # 1. Run ML
         ml_predictions = model_service.predict(request.query)
 
-        # Step 2: Get Gemini interpretation
-        result = analyze_navigation_query(
+        # 2. Conditional ML / Gemini routing
+        result = process_navigation_query(
             request.query,
             ml_predictions
         )
 
-        # Step 3: Attach ML predictions
-        result["ml_predictions"] = ml_predictions
-
-        # Step 4: Normalize response
+        # 3. Normalize both processing paths
         normalized_result = normalize_response(
             result,
             request.query
         )
 
-        # Step 5: Return result
         return normalized_result
 
     except Exception as e:
         error_message = str(e)
+
+        if "429" in error_message or "RESOURCE_EXHAUSTED" in error_message:
+            raise HTTPException(
+                status_code=429,
+                detail="Gemini API quota exceeded. Please retry after the quota resets."
+            )
 
         if "503" in error_message or "UNAVAILABLE" in error_message:
             raise HTTPException(
@@ -101,6 +103,7 @@ def analyze_query(request: NavigationRequest):
             status_code=500,
             detail=f"Navigation analysis failed: {error_message}"
         )
+
 @app.post("/api/transcribe")
 async def transcribe_endpoint(audio: UploadFile = File(...)):
     if not audio.content_type or not audio.content_type.startswith("audio/"):

@@ -1,4 +1,5 @@
 
+
 from typing import Any
 
 
@@ -42,7 +43,10 @@ def normalize_reference(reference: Any) -> dict | None:
     if isinstance(reference, dict):
         return {
             "category": reference.get("category"),
-            "name": reference.get("name"),
+            "name": (
+                reference.get("name")
+                or reference.get("location_name")
+            ),
             "description": reference.get("description")
         }
 
@@ -58,7 +62,7 @@ def normalize_relationships(relationships: Any) -> list:
         return normalized
 
     relation_keywords = {
-        "NEAR": ["near", "close to"],
+        "NEAR": ["near", "close to", "nearby"],
         "BEHIND": ["behind"],
         "OPPOSITE": ["opposite", "across from"],
         "IN_FRONT_OF": ["in front of"],
@@ -71,7 +75,6 @@ def normalize_relationships(relationships: Any) -> list:
 
     for item in relationships:
 
-        # Handle relationships returned as plain text
         if isinstance(item, str):
             text = item.lower()
             relation = "UNSPECIFIED"
@@ -89,13 +92,12 @@ def normalize_relationships(relationships: Any) -> list:
             })
             continue
 
-        # Ignore unsupported formats
         if not isinstance(item, dict):
             continue
 
-        # Handle different relationship field names
         relation = (
             item.get("relationship_type")
+            or item.get("relationship")
             or item.get("type")
             or item.get("relation")
             or "UNSPECIFIED"
@@ -105,6 +107,8 @@ def normalize_relationships(relationships: Any) -> list:
             item.get("target_object")
             or item.get("target_entity")
             or item.get("entity1_description")
+            or item.get("entity_1")
+            or item.get("object")
             or item.get("target")
         )
 
@@ -112,6 +116,8 @@ def normalize_relationships(relationships: Any) -> list:
             item.get("reference_object")
             or item.get("anchor_entity")
             or item.get("entity2_description")
+            or item.get("entity_2")
+            or item.get("anchor")
             or item.get("reference")
         )
 
@@ -126,23 +132,25 @@ def normalize_relationships(relationships: Any) -> list:
 
 
 def normalize_ml_validation(validation: Any) -> dict:
-    """Preserve Gemini's ML validation output."""
+    """Preserve ML validation and ML-only metadata."""
 
     if not isinstance(validation, dict):
-        validation = {}
+        return {}
 
-    return {
-        "intent_retained": validation.get("intent_retained", False),
-        "entities_retained": validation.get("entities_retained", []),
-        "entities_corrected": validation.get("entities_corrected", []),
-        "entities_added": validation.get("entities_added", []),
-        "entities_rejected": validation.get("entities_rejected", []),
-        "reasoning": validation.get("reasoning", "")
-    }
+    normalized = dict(validation)
+
+    normalized.setdefault("intent_retained", False)
+    normalized.setdefault("entities_retained", [])
+    normalized.setdefault("entities_corrected", [])
+    normalized.setdefault("entities_added", [])
+    normalized.setdefault("entities_rejected", [])
+    normalized.setdefault("reasoning", "")
+
+    return normalized
 
 
 def normalize_response(result: dict, original_query: str) -> dict:
-    """Normalize the complete Gemini hybrid response."""
+    """Normalize responses from both ML-only and ML+LLM paths."""
 
     return {
         "query": original_query,
@@ -183,5 +191,14 @@ def normalize_response(result: dict, original_query: str) -> dict:
 
         "ml_validation": normalize_ml_validation(
             result.get("ml_validation")
+        ),
+
+        # Conditional routing metadata
+        "processing_path": result.get("processing_path"),
+
+        "llm_invoked": result.get("llm_invoked"),
+
+        "routing_reasons": result.get(
+            "routing_reasons", []
         )
     }
