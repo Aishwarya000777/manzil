@@ -1,0 +1,26 @@
+{
+  "dataset": "Manzil v2 cleaned + NER-improvement synthetic candidate set",
+  "total_records": 1075,
+  "split": {"train": 717, "validation": 181, "test": 177},
+  "language": {"HINDI_DEVANAGARI": 359, "HINGLISH": 358, "ROMANIZED_HINDI": 358},
+  "intent": {"ETA_QUERY": 200, "NAVIGATE": 475, "OTHER": 200, "SEARCH": 200},
+  "annotation_status": "All records are synthetic candidates requiring independent human review.",
+  "quality_checks": {
+    "invalid_bio_I_transitions": 0,
+    "token_tag_offset_mismatches": 0,
+    "entity_offset_mismatches": 0,
+    "exact_normalized_duplicate_groups": 0,
+    "scenario_family_split_overlaps": 0
+  },
+  "model_status": {
+    "intent_classifier": "unchanged existing classifier",
+    "linear_chain_crf": "retrained with BIO constraints and rare-entity utterance oversampling",
+    "xlm_roberta": "not trained",
+    "mbert": "not trained"
+  },
+  "limitations": [
+    "Synthetic data only; not representative production traffic.",
+    "DESC, CONTEXT and Romanized Hindi remain weaker categories.",
+    "Human annotation and independent agreement are pending."
+  ]
+}
