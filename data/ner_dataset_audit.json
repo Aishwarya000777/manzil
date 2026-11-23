@@ -1,0 +1,11 @@
+{
+  "rows": 1075,
+  "split_counts": {"test": 177, "train": 717, "validation": 181},
+  "BIO_invalid_I_transitions": 0,
+  "token_tag_or_offset_mismatches": 0,
+  "token_count_mismatches": 0,
+  "entity_offset_mismatches": 0,
+  "normalized_exact_duplicate_groups": 0,
+  "family_cross_split_overlaps": 0,
+  "annotation_status": "All records are synthetic candidates requiring independent human review."
+}
