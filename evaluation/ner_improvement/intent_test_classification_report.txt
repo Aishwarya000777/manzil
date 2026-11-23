@@ -1,0 +1,10 @@
+              precision    recall  f1-score   support
+
+   ETA_QUERY     0.6939    1.0000    0.8193        34
+    NAVIGATE     1.0000    0.8281    0.9060        64
+       OTHER     1.0000    1.0000    1.0000        32
+      SEARCH     1.0000    0.8750    0.9333        32
+
+    accuracy                         0.9074       162
+   macro avg     0.9235    0.9258    0.9146       162
+weighted avg     0.9358    0.9074    0.9118       162
