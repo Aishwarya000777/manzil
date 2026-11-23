@@ -1,0 +1,25 @@
+{
+  "model":"final_shared",
+  "split":"test",
+  "rows":176,
+  "token_accuracy":0.8596698113,
+  "token_macro_f1":0.7045527207,
+  "exact_span_precision":0.7051886792,
+  "exact_span_recall":0.7204819277,
+  "exact_span_f1":0.7127532777,
+  "invalid_bio_predictions":0,
+  "entity_span_metrics":{
+    "CONTEXT":{"precision":0.4,"recall":0.1818181818,"f1":0.25,"support":33},
+    "DESC":{"precision":0.3333333333,"recall":0.3,"f1":0.3157894737,"support":20},
+    "DEST":{"precision":0.6666666667,"recall":0.7913669065,"f1":0.7236842105,"support":139},
+    "DIR":{"precision":0.875,"recall":0.7777777778,"f1":0.8235294118,"support":9},
+    "DIST":{"precision":0.8888888889,"recall":0.8888888889,"f1":0.8888888889,"support":9},
+    "REF":{"precision":0.8636363636,"recall":0.7983193277,"f1":0.8296943231,"support":119},
+    "REL":{"precision":0.6767676768,"recall":0.7790697674,"f1":0.7243243243,"support":86}
+  },
+  "language_metrics":{
+    "HINDI_DEVANAGARI":{"precision":0.8356164384,"recall":0.8243243243,"f1":0.8299319728,"support":148},
+    "ROMANIZED_HINDI":{"precision":0.5960264901,"recall":0.612244898,"f1":0.6040268456,"support":147},
+    "HINGLISH":{"precision":0.6850393701,"recall":0.725,"f1":0.7044534413,"support":120}
+  }
+}
