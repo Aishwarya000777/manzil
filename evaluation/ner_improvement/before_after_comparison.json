@@ -1,0 +1,30 @@
+{
+  "comparison_protocol": "Same 176 held-out test rows for both checkpoints. The Madhapur/ATM regression query was excluded from the shared comparison due exact duplicate leakage in the baseline training data.",
+  "baseline": {
+    "rows": 176,
+    "token_accuracy": 0.7158018868,
+    "token_macro_f1": 0.2281877401,
+    "exact_span_precision": 0.4229390681,
+    "exact_span_recall": 0.2843373494,
+    "exact_span_f1": 0.3400576369,
+    "invalid_bio_predictions": 43
+  },
+  "improved": {
+    "rows": 176,
+    "token_accuracy": 0.8596698113,
+    "token_macro_f1": 0.7045527207,
+    "exact_span_precision": 0.7051886792,
+    "exact_span_recall": 0.7204819277,
+    "exact_span_f1": 0.7127532777,
+    "invalid_bio_predictions": 0
+  },
+  "final_model_full_177_test": {
+    "rows": 177,
+    "token_accuracy": 0.8606013276,
+    "token_macro_f1": 0.7134305504,
+    "exact_span_precision": 0.7099767981,
+    "exact_span_recall": 0.7251184834,
+    "exact_span_f1": 0.7174677608,
+    "invalid_bio_predictions": 0
+  }
+}
