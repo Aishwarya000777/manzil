@@ -1,0 +1,7 @@
+{
+  "note": "Intent classifier was not retrained or modified; before and after metrics are identical. Current deployed repo checkpoint evaluated on its existing 162-row test split.",
+  "results": {
+    "validation": {"n":166,"accuracy":0.9337349398,"macro_f1":0.9413333333,"weighted_f1":0.9356787149},
+    "test": {"n":162,"accuracy":0.9074074074,"macro_f1":0.9146483369,"weighted_f1":0.9117592243}
+  }
+}
