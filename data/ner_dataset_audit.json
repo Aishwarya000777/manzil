@@ -1,11 +1,140 @@
 {
   "rows": 1075,
-  "split_counts": {"test": 177, "train": 717, "validation": 181},
+  "split_counts": {
+    "test": 177,
+    "train": 717,
+    "validation": 181
+  },
+  "language_counts": {
+    "HINDI_DEVANAGARI": 359,
+    "HINGLISH": 358,
+    "ROMANIZED_HINDI": 358
+  },
+  "intent_counts": {
+    "ETA_QUERY": 200,
+    "NAVIGATE": 475,
+    "OTHER": 200,
+    "SEARCH": 200
+  },
+  "complexity_counts": {
+    "CONTEXTUAL": 114,
+    "CONTRADICTORY": 99,
+    "DISTANCE_DIRECTION": 100,
+    "IMPLICIT": 99,
+    "INCOMPLETE": 99,
+    "NESTED_RELATION": 159,
+    "REFERENCE_BASED": 102,
+    "SELF_CORRECTED": 99,
+    "SIMPLE": 102,
+    "SPATIAL": 102
+  },
+  "scenario_category_counts": {
+    "atm": 75,
+    "bus": 78,
+    "college": 78,
+    "complex_navigation": 15,
+    "contextual_navigation": 15,
+    "emergency": 75,
+    "hospital": 78,
+    "mall": 78,
+    "metro": 78,
+    "mixed_navigation": 45,
+    "office": 76,
+    "railway": 78,
+    "residential": 75,
+    "restaurant": 78,
+    "school": 78,
+    "tourist": 75
+  },
   "BIO_invalid_I_transitions": 0,
   "token_tag_or_offset_mismatches": 0,
   "token_count_mismatches": 0,
   "entity_offset_mismatches": 0,
   "normalized_exact_duplicate_groups": 0,
   "family_cross_split_overlaps": 0,
-  "annotation_status": "All records are synthetic candidates requiring independent human review."
+  "entity_label_counts_by_split": {
+    "train": {
+      "CONTEXT": 42,
+      "DESC": 144,
+      "DEST": 582,
+      "DIR": 31,
+      "DIST": 66,
+      "REF": 382,
+      "REL": 319
+    },
+    "validation": {
+      "CONTEXT": 10,
+      "DESC": 21,
+      "DEST": 166,
+      "DIR": 79,
+      "DIST": 33,
+      "REF": 98,
+      "REL": 86
+    },
+    "test": {
+      "CONTEXT": 35,
+      "DESC": 21,
+      "DEST": 140,
+      "DIR": 9,
+      "DIST": 9,
+      "REF": 120,
+      "REL": 88
+    }
+  },
+  "entity_label_counts_by_language": {
+    "HINDI_DEVANAGARI": {
+      "CONTEXT": 21,
+      "DESC": 62,
+      "DEST": 304,
+      "DIR": 39,
+      "DIST": 36,
+      "REF": 215,
+      "REL": 172
+    },
+    "HINGLISH": {
+      "CONTEXT": 23,
+      "DESC": 62,
+      "DEST": 281,
+      "DIR": 41,
+      "DIST": 36,
+      "REF": 193,
+      "REL": 171
+    },
+    "ROMANIZED_HINDI": {
+      "CONTEXT": 43,
+      "DESC": 62,
+      "DEST": 303,
+      "DIR": 39,
+      "DIST": 36,
+      "REF": 192,
+      "REL": 150
+    }
+  },
+  "annotation_status_counts": {
+    "SYNTHETIC_CANDIDATE_REQUIRES_HUMAN_REVIEW": 1075
+  },
+  "new_rows_by_id_prefix": {
+    "MANZ2": 1000,
+    "MANZ2CTX": 15,
+    "MANZ2TR": 15,
+    "MANZ2X": 45
+  },
+  "new_row_split_counts_by_prefix": {
+    "MANZ2CTX": {
+      "train": 15
+    },
+    "MANZ2TR": {
+      "train": 15
+    },
+    "MANZ2X": {
+      "train": 15,
+      "validation": 15,
+      "test": 15
+    }
+  },
+  "notes": [
+    "Freshly recomputed from the exact JSONL files packaged in this patch.",
+    "All 1,075 records are synthetic candidates requiring human review; none are certified real-user annotations.",
+    "The exact Madhapur/ATM regression query is held out from the final training set."
+  ]
 }

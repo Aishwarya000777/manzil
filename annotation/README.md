@@ -1,3 +1,3 @@
-# Human annotation
+# Human annotation workbook
 
-The companion ZIP contains `Manzil_Human_Annotation_Workbook_300.xlsx`, with separate annotator sheets and adjudication sheet. No annotations have been completed yet. Use the guidelines in `docs/ANNOTATION_GUIDELINES.md`. Keep annotators independent and record the adjudication process.
+`Manzil_Human_Annotation_Workbook_300.xlsx` is a work-in-progress review workbook. It has not been completed by two independent annotators. Do not claim human validation or inter-annotator agreement until both annotators complete their sheets and adjudication is recorded.

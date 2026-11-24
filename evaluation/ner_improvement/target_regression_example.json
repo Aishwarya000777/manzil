@@ -1,10 +1,118 @@
 {
   "status": "PASS",
-  "note": "Held out from final model training. Excluded from the paired baseline comparison because an identical query was present in baseline training.",
+  "note": "This query is held out from the final model training set. It is excluded from the 176-row shared before/after comparison because the original baseline checkpoint had seen an exact copy during its training.",
   "id": "MANZ2X_1041",
   "query": "Madhapur mein jo mall hai uske peeche wali building ke paas ek ATM hai, wahan jaana hai.",
-  "gold": [["CONTEXT",0,1],["REF",3,4],["REL",5,7],["DESC",7,9],["REL",9,11],["DEST",12,13],["CONTEXT",14,15]],
-  "pred": [["CONTEXT",0,1],["REF",3,4],["REL",5,7],["DESC",7,9],["REL",9,11],["DEST",12,13],["CONTEXT",14,15]],
-  "tokens": ["Madhapur","mein","jo","mall","hai","uske","peeche","wali","building","ke","paas","ek","ATM","hai,","wahan","jaana","hai."],
-  "bio_tags": ["B-CONTEXT","O","O","B-REF","O","B-REL","I-REL","B-DESC","I-DESC","B-REL","I-REL","O","B-DEST","O","B-CONTEXT","O","O"]
+  "gold": [
+    [
+      "CONTEXT",
+      0,
+      1
+    ],
+    [
+      "REF",
+      3,
+      4
+    ],
+    [
+      "REL",
+      5,
+      7
+    ],
+    [
+      "DESC",
+      7,
+      9
+    ],
+    [
+      "REL",
+      9,
+      11
+    ],
+    [
+      "DEST",
+      12,
+      13
+    ],
+    [
+      "CONTEXT",
+      14,
+      15
+    ]
+  ],
+  "pred": [
+    [
+      "CONTEXT",
+      0,
+      1
+    ],
+    [
+      "REF",
+      3,
+      4
+    ],
+    [
+      "REL",
+      5,
+      7
+    ],
+    [
+      "DESC",
+      7,
+      9
+    ],
+    [
+      "REL",
+      9,
+      11
+    ],
+    [
+      "DEST",
+      12,
+      13
+    ],
+    [
+      "CONTEXT",
+      14,
+      15
+    ]
+  ],
+  "tokens": [
+    "Madhapur",
+    "mein",
+    "jo",
+    "mall",
+    "hai",
+    "uske",
+    "peeche",
+    "wali",
+    "building",
+    "ke",
+    "paas",
+    "ek",
+    "ATM",
+    "hai,",
+    "wahan",
+    "jaana",
+    "hai."
+  ],
+  "bio_tags": [
+    "B-CONTEXT",
+    "O",
+    "O",
+    "B-REF",
+    "O",
+    "B-REL",
+    "I-REL",
+    "B-DESC",
+    "I-DESC",
+    "B-REL",
+    "I-REL",
+    "O",
+    "B-DEST",
+    "O",
+    "B-CONTEXT",
+    "O",
+    "O"
+  ]
 }

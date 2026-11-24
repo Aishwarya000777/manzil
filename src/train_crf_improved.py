@@ -83,6 +83,7 @@ def load_rows(path):
     return rows
 
 def span_f1(model, rows, tags):
+    ids={t:i for i,t in enumerate(tags)}
     gold_by={};pred_by={}
     for r in rows:
         with torch.no_grad(): pred=[tags[i] for i in model.decode(encode(r['token_sequence']))]
@@ -117,6 +118,7 @@ def train(data, out, epochs=30, lr=0.01, seed=429, rare_repeat=4):
     test=[r for r in rows if r.get("split")=="test"]
     missing=set(tags)-{t for r in tr for t in r['bio_tags']}
     if missing: raise ValueError(f"Training split misses labels: {sorted(missing)}")
+    # Oversample rare-entity utterances, not isolated tokens, to retain sequence context.
     pool=[]
     for r in tr:
         labels={t.split('-',1)[1] for t in r['bio_tags'] if t!='O'}
@@ -143,6 +145,8 @@ def train(data, out, epochs=30, lr=0.01, seed=429, rare_repeat=4):
             if stale>=patience: break
     if best_state is None: raise RuntimeError('No best checkpoint captured')
     model.load_state_dict(best_state,strict=False); model.eval()
+    # Persist the hard BIO constraints as very negative values. The existing
+    # backend Viterbi decoder then obeys the same legal transitions unchanged.
     with torch.no_grad():
         model.start.copy_(model.start.masked_fill(~model.start_mask,-1e4))
         model.trans.copy_(model.trans.masked_fill(~model.trans_mask,-1e4))
@@ -150,7 +154,7 @@ def train(data, out, epochs=30, lr=0.01, seed=429, rare_repeat=4):
     torch.save({'state_dict':{k:v.detach().cpu() for k,v in model.state_dict().items() if k not in ('start_mask','trans_mask')},
                 'tags':tags,'feature_dim':FEATURE_DIM,'feature_version':'manzil-hash-v1-bio-constrained',
                 'selected_epoch':best_epoch,'validation_macro_span_f1':best,'training_rows':len(tr),'training_utterances_after_oversampling':len(pool)},out)
-    print(f"Saved checkpoint: {out} (best epoch {best_epoch}; validation macro span F1 {best:.4f}; train={len(tr)}, val={len(va)}, test={len(test)})")
+    print(f"Saved checkpoint: {out} (best epoch {best_epoch}; val NLL {best:.4f}; train={len(tr)}, val={len(va)}, test={len(test)})")
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--data',default='data/manzil_v2_token_level_clean_augmented.jsonl');p.add_argument('--epochs',type=int,default=30);p.add_argument('--lr',type=float,default=.01);p.add_argument('--rare-repeat',type=int,default=8);p.add_argument('--seed',type=int,default=429);p.add_argument('--out',default='models/manzil_linear_crf.pt');a=p.parse_args()

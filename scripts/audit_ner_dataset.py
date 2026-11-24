@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Validate Manzil token/entity offsets, BIO legality, duplicates and split-family isolation."""
-import argparse
-import json
-import collections
+import argparse, json, collections
 from pathlib import Path
 
 def main():
@@ -11,15 +9,12 @@ def main():
     ap.add_argument('--out',default='data/ner_dataset_audit_runtime.json')
     a=ap.parse_args()
     rows=[json.loads(x) for x in open(a.data,encoding='utf-8') if x.strip()]
-    bad_bio=[]; bad_offsets=[]; bad_entities=[]; bad_lengths=[]
-    norm=collections.defaultdict(list); fam=collections.defaultdict(set)
+    bad_bio=[]; bad_offsets=[]; bad_entities=[]; bad_lengths=[]; norm=collections.defaultdict(list); fam=collections.defaultdict(set)
     for r in rows:
         q=r['query']; ts=r['token_sequence']; tags=r['bio_tags']; toks=r['tokens']
-        if len(ts)!=len(tags) or len(ts)!=len(toks):
-            bad_lengths.append(r['id']); continue
+        if len(ts)!=len(tags) or len(ts)!=len(toks): bad_lengths.append(r['id']); continue
         for i,t in enumerate(tags):
-            if t.startswith('I-') and (i==0 or tags[i-1] not in ('B-'+t[2:],'I-'+t[2:])):
-                bad_bio.append((r['id'],i,t))
+            if t.startswith('I-') and (i==0 or tags[i-1] not in ('B-'+t[2:],'I-'+t[2:])): bad_bio.append((r['id'],i,t))
         for t,o,tag in zip(ts,toks,tags):
             if q[o['start']:o['end']]!=t or o['tag']!=tag: bad_offsets.append(r['id'])
         for e in r.get('entities',[]):
@@ -42,8 +37,5 @@ def main():
     Path(a.out).parent.mkdir(parents=True,exist_ok=True)
     Path(a.out).write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(result,ensure_ascii=False,indent=2))
-    if any((bad_bio,bad_offsets,bad_entities,bad_lengths,duplicates,family_overlap)):
-        raise SystemExit(2)
-
-if __name__=='__main__':
-    main()
+    if any((bad_bio,bad_offsets,bad_entities,bad_lengths,duplicates,family_overlap)): raise SystemExit(2)
+if __name__=='__main__': main()

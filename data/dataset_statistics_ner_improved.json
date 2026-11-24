@@ -1,9 +1,81 @@
 {
   "dataset": "Manzil v2 cleaned + NER-improvement synthetic candidate set",
   "total_records": 1075,
-  "split": {"train": 717, "validation": 181, "test": 177},
-  "language": {"HINDI_DEVANAGARI": 359, "HINGLISH": 358, "ROMANIZED_HINDI": 358},
-  "intent": {"ETA_QUERY": 200, "NAVIGATE": 475, "OTHER": 200, "SEARCH": 200},
+  "split": {
+    "train": 717,
+    "validation": 181,
+    "test": 177
+  },
+  "language": {
+    "HINDI_DEVANAGARI": 359,
+    "HINGLISH": 358,
+    "ROMANIZED_HINDI": 358
+  },
+  "intent": {
+    "ETA_QUERY": 200,
+    "NAVIGATE": 475,
+    "OTHER": 200,
+    "SEARCH": 200
+  },
+  "complexity": {
+    "CONTEXTUAL": 114,
+    "CONTRADICTORY": 99,
+    "DISTANCE_DIRECTION": 100,
+    "IMPLICIT": 99,
+    "INCOMPLETE": 99,
+    "NESTED_RELATION": 159,
+    "REFERENCE_BASED": 102,
+    "SELF_CORRECTED": 99,
+    "SIMPLE": 102,
+    "SPATIAL": 102
+  },
+  "scenario_category": {
+    "atm": 75,
+    "bus": 78,
+    "college": 78,
+    "complex_navigation": 15,
+    "contextual_navigation": 15,
+    "emergency": 75,
+    "hospital": 78,
+    "mall": 78,
+    "metro": 78,
+    "mixed_navigation": 45,
+    "office": 76,
+    "railway": 78,
+    "residential": 75,
+    "restaurant": 78,
+    "school": 78,
+    "tourist": 75
+  },
+  "entity_spans_by_split": {
+    "train": {
+      "CONTEXT": 42,
+      "DESC": 144,
+      "DEST": 582,
+      "DIR": 31,
+      "DIST": 66,
+      "REF": 382,
+      "REL": 319
+    },
+    "validation": {
+      "CONTEXT": 10,
+      "DESC": 21,
+      "DEST": 166,
+      "DIR": 79,
+      "DIST": 33,
+      "REF": 98,
+      "REL": 86
+    },
+    "test": {
+      "CONTEXT": 35,
+      "DESC": 21,
+      "DEST": 140,
+      "DIR": 9,
+      "DIST": 9,
+      "REF": 120,
+      "REL": 88
+    }
+  },
   "annotation_status": "All records are synthetic candidates requiring independent human review.",
   "quality_checks": {
     "invalid_bio_I_transitions": 0,

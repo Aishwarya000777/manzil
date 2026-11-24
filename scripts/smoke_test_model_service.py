@@ -15,4 +15,4 @@ if __name__ == '__main__':
     }
     if not required.issubset(labels):
         raise SystemExit(f'Regression case failed. Missing: {sorted(required-labels)}')
-    print('PASS: unchanged backend model_service loaded the CRF checkpoint and extracted all target spans.')
+    print('PASS: the unchanged backend model_service loaded the CRF checkpoint and extracted all target spans.')
