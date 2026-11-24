@@ -1,0 +1,190 @@
+{
+  "model": "final_shared",
+  "split": "test",
+  "rows": 176,
+  "token_accuracy": 0.8596698113207547,
+  "token_macro_f1": 0.7045527206936483,
+  "exact_span_precision": 0.7051886792452831,
+  "exact_span_recall": 0.7204819277108434,
+  "exact_span_f1": 0.7127532777115614,
+  "invalid_bio_predictions": 0,
+  "classification_report": {
+    "B-CONTEXT": {
+      "precision": 0.4666666666666667,
+      "recall": 0.21212121212121213,
+      "f1-score": 0.2916666666666667,
+      "support": 33.0
+    },
+    "B-DESC": {
+      "precision": 0.3333333333333333,
+      "recall": 0.3,
+      "f1-score": 0.3157894736842105,
+      "support": 20.0
+    },
+    "B-DEST": {
+      "precision": 0.703030303030303,
+      "recall": 0.8345323741007195,
+      "f1-score": 0.7631578947368421,
+      "support": 139.0
+    },
+    "B-DIR": {
+      "precision": 0.875,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.8235294117647058,
+      "support": 9.0
+    },
+    "B-DIST": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 9.0
+    },
+    "B-REF": {
+      "precision": 0.8636363636363636,
+      "recall": 0.7983193277310925,
+      "f1-score": 0.8296943231441049,
+      "support": 119.0
+    },
+    "B-REL": {
+      "precision": 0.6767676767676768,
+      "recall": 0.7790697674418605,
+      "f1-score": 0.7243243243243244,
+      "support": 86.0
+    },
+    "I-CONTEXT": {
+      "precision": 0.45,
+      "recall": 0.1111111111111111,
+      "f1-score": 0.1782178217821782,
+      "support": 81.0
+    },
+    "I-DESC": {
+      "precision": 0.35,
+      "recall": 0.3684210526315789,
+      "f1-score": 0.358974358974359,
+      "support": 19.0
+    },
+    "I-DEST": {
+      "precision": 0.6666666666666666,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.7619047619047619,
+      "support": 108.0
+    },
+    "I-DIR": {
+      "precision": 1.0,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.9411764705882353,
+      "support": 9.0
+    },
+    "I-DIST": {
+      "precision": 0.9,
+      "recall": 1.0,
+      "f1-score": 0.9473684210526315,
+      "support": 9.0
+    },
+    "I-REF": {
+      "precision": 0.88,
+      "recall": 0.9565217391304348,
+      "f1-score": 0.9166666666666666,
+      "support": 69.0
+    },
+    "I-REL": {
+      "precision": 0.6837606837606838,
+      "recall": 0.9411764705882353,
+      "f1-score": 0.7920792079207921,
+      "support": 85.0
+    },
+    "O": {
+      "precision": 0.9298957126303592,
+      "recall": 0.9176672384219554,
+      "f1-score": 0.9237410071942446,
+      "support": 1749.0
+    },
+    "accuracy": 0.8596698113207547,
+    "macro avg": {
+      "precision": 0.7185838270994702,
+      "recall": 0.7182997232555838,
+      "f1-score": 0.7045527206936483,
+      "support": 2544.0
+    },
+    "weighted avg": {
+      "precision": 0.854978335602509,
+      "recall": 0.8596698113207547,
+      "f1-score": 0.8514919602379641,
+      "support": 2544.0
+    }
+  },
+  "entity_span_metrics": {
+    "CONTEXT": {
+      "precision": 0.4,
+      "recall": 0.18181818181818182,
+      "f1": 0.25000000000000006,
+      "support": 33,
+      "predicted": 15
+    },
+    "DESC": {
+      "precision": 0.3333333333333333,
+      "recall": 0.3,
+      "f1": 0.3157894736842105,
+      "support": 20,
+      "predicted": 18
+    },
+    "DEST": {
+      "precision": 0.6666666666666666,
+      "recall": 0.7913669064748201,
+      "f1": 0.7236842105263158,
+      "support": 139,
+      "predicted": 165
+    },
+    "DIR": {
+      "precision": 0.875,
+      "recall": 0.7777777777777778,
+      "f1": 0.823529411764706,
+      "support": 9,
+      "predicted": 8
+    },
+    "DIST": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8888888888888888,
+      "f1": 0.8888888888888888,
+      "support": 9,
+      "predicted": 9
+    },
+    "REF": {
+      "precision": 0.8636363636363636,
+      "recall": 0.7983193277310925,
+      "f1": 0.8296943231441049,
+      "support": 119,
+      "predicted": 110
+    },
+    "REL": {
+      "precision": 0.6767676767676768,
+      "recall": 0.7790697674418605,
+      "f1": 0.7243243243243244,
+      "support": 86,
+      "predicted": 99
+    }
+  },
+  "language_metrics": {
+    "HINDI_DEVANAGARI": {
+      "precision": 0.8356164383561644,
+      "recall": 0.8243243243243243,
+      "f1": 0.8299319727891157,
+      "support": 148,
+      "predicted": 146
+    },
+    "ROMANIZED_HINDI": {
+      "precision": 0.5960264900662252,
+      "recall": 0.6122448979591837,
+      "f1": 0.6040268456375839,
+      "support": 147,
+      "predicted": 151
+    },
+    "HINGLISH": {
+      "precision": 0.6850393700787402,
+      "recall": 0.725,
+      "f1": 0.7044534412955465,
+      "support": 120,
+      "predicted": 127
+    }
+  }
+}

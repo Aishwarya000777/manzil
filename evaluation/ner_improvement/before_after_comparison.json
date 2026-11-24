@@ -1,0 +1,114 @@
+{
+  "comparison_protocol": "Same 176 held-out test rows for both checkpoints. The Madhapur/ATM regression query was excluded from this shared before/after comparison because it was present in the original baseline training set; the final retrained model was evaluated on that query separately after removing it from training.",
+  "baseline": {
+    "rows": 176,
+    "token_accuracy": 0.7158018867924528,
+    "token_macro_f1": 0.2281877401303962,
+    "exact_span_precision": 0.4229390681003584,
+    "exact_span_recall": 0.28433734939759037,
+    "exact_span_f1": 0.34005763688760804,
+    "invalid_bio_predictions": 43
+  },
+  "improved": {
+    "rows": 176,
+    "token_accuracy": 0.8596698113207547,
+    "token_macro_f1": 0.7045527206936483,
+    "exact_span_precision": 0.7051886792452831,
+    "exact_span_recall": 0.7204819277108434,
+    "exact_span_f1": 0.7127532777115614,
+    "invalid_bio_predictions": 0
+  },
+  "validation_selected_candidate": {
+    "rows": 181,
+    "token_accuracy": 0.9237472766884531,
+    "token_macro_f1": 0.7956960092770132,
+    "exact_span_precision": 0.8786516853932584,
+    "exact_span_recall": 0.7931034482758621,
+    "exact_span_f1": 0.8336886993603412,
+    "invalid_bio_predictions": 0
+  },
+  "final_model_full_177_test": {
+    "rows": 177,
+    "token_accuracy": 0.8606013276064037,
+    "token_macro_f1": 0.7134305503839584,
+    "exact_span_precision": 0.7099767981438515,
+    "exact_span_recall": 0.7251184834123223,
+    "exact_span_f1": 0.7174677608440797,
+    "invalid_bio_predictions": 0
+  },
+  "per_entity_exact_span_metrics_on_shared_176_test": {
+    "CONTEXT": {
+      "precision": 0.4,
+      "recall": 0.18181818181818182,
+      "f1": 0.25000000000000006,
+      "support": 33,
+      "predicted": 15
+    },
+    "DESC": {
+      "precision": 0.3333333333333333,
+      "recall": 0.3,
+      "f1": 0.3157894736842105,
+      "support": 20,
+      "predicted": 18
+    },
+    "DEST": {
+      "precision": 0.6666666666666666,
+      "recall": 0.7913669064748201,
+      "f1": 0.7236842105263158,
+      "support": 139,
+      "predicted": 165
+    },
+    "DIR": {
+      "precision": 0.875,
+      "recall": 0.7777777777777778,
+      "f1": 0.823529411764706,
+      "support": 9,
+      "predicted": 8
+    },
+    "DIST": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8888888888888888,
+      "f1": 0.8888888888888888,
+      "support": 9,
+      "predicted": 9
+    },
+    "REF": {
+      "precision": 0.8636363636363636,
+      "recall": 0.7983193277310925,
+      "f1": 0.8296943231441049,
+      "support": 119,
+      "predicted": 110
+    },
+    "REL": {
+      "precision": 0.6767676767676768,
+      "recall": 0.7790697674418605,
+      "f1": 0.7243243243243244,
+      "support": 86,
+      "predicted": 99
+    }
+  },
+  "per_language_exact_span_metrics_on_shared_176_test": {
+    "HINDI_DEVANAGARI": {
+      "precision": 0.8356164383561644,
+      "recall": 0.8243243243243243,
+      "f1": 0.8299319727891157,
+      "support": 148,
+      "predicted": 146
+    },
+    "ROMANIZED_HINDI": {
+      "precision": 0.5960264900662252,
+      "recall": 0.6122448979591837,
+      "f1": 0.6040268456375839,
+      "support": 147,
+      "predicted": 151
+    },
+    "HINGLISH": {
+      "precision": 0.6850393700787402,
+      "recall": 0.725,
+      "f1": 0.7044534412955465,
+      "support": 120,
+      "predicted": 127
+    }
+  },
+  "intent_model": "Not retrained or modified. See intent_before_after.json."
+}

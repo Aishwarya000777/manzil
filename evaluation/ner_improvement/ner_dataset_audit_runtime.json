@@ -1,0 +1,43 @@
+{
+  "rows": 1075,
+  "split_counts": {
+    "train": 717,
+    "validation": 181,
+    "test": 177
+  },
+  "invalid_bio_transitions": 0,
+  "token_offset_or_tag_errors": 0,
+  "entity_offset_errors": 0,
+  "token_length_errors": 0,
+  "normalized_exact_duplicate_groups": 0,
+  "family_cross_split_overlaps": 0,
+  "entity_counts_by_split": {
+    "train": {
+      "CONTEXT": 128,
+      "DESC": 439,
+      "DEST": 1039,
+      "DIR": 53,
+      "DIST": 178,
+      "REF": 617,
+      "REL": 652
+    },
+    "validation": {
+      "CONTEXT": 27,
+      "DESC": 41,
+      "DEST": 294,
+      "DIR": 147,
+      "DIST": 94,
+      "REF": 151,
+      "REL": 179
+    },
+    "test": {
+      "CONTEXT": 116,
+      "DESC": 41,
+      "DEST": 248,
+      "DIR": 18,
+      "DIST": 18,
+      "REF": 189,
+      "REL": 175
+    }
+  }
+}
